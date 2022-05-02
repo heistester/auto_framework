@@ -1,0 +1,21 @@
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li  class="active"><a href="{% url 'api-test' %}">API测试 <span class="sr-only">(current)</span></a></li>
+        <li><a href="#">已存测试</a></li>
+        <li ><a href="{% url 'type-list' %}">请求类型</a></li>
+    </ul>
+</div>
+<script>
+    function setLiActive() {
+        var path=window.location.pathname;
+        var menus=$(".nav-sidebar").children();
+        var apath=null;
+        var className=null;
+        $.each(menus,function (index,li) {
+           apath =li.children[0].getAttribute("href");
+           className= path.search("^".concat(apath)) != -1 ? "active" : "";
+           li.setAttribute("class",className);
+        })
+    }
+    setLiActive()
+</script>

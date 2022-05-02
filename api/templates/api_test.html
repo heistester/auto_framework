@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'api/css/api.css' %}">
+{% endblock %}
+
+{% block title %}
+    API测试
+{% endblock %}
+
+{% block main_title %}
+    API测试
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="row top">
+        <form class="form-horizontal" id="error-form">
+            {% csrf_token %}
+            <div class="form-group"></div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">请求类型</label>
+                <div class="col-sm-8">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default" value="{{ type_all.first.pk }}" id="typeBtn">
+                            {{ type_all.first.name }}
+                        </button>
+                        <button
+                                type="button"
+                                class="btn btn-default dropdown-toggle"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                        >
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            {% for foo in type_all %}
+                                <li><a href="#"
+                                       onclick="selectType('{{ foo.id }}', '{{ foo.name }}')">{{ foo.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" id="address-form">
+                <label class="col-sm-2 control-label">请求地址</label>
+                <div class="col-sm-8 ">
+                    <input
+                            type="text"
+                            class="form-control"
+                            id="url"
+                            placeholder="http://www.host.com"
+                            required
+                    />
+                    <span class="help-block" id="error-url"></span>
+                </div>
+            </div>
+
+            <div class="form-group" id="header-form">
+                <label class="col-sm-2 control-label">请求头信息</label>
+                <div class="col-sm-8">
+        <textarea
+                class="form-control"
+                rows="3"
+                id="headers"
+                placeholder='{"Content-Type":"text/json;charset=utf-8"}'
+        ></textarea>
+                    <span class="help-block" id="error-headers"></span>
+                </div>
+            </div>
+
+            <div class="form-group hide" id="parameter-form">
+                <label class="col-sm-2 control-label">请求参数</label>
+                <div class="col-sm-8">
+        <textarea
+                class="form-control"
+                rows="4"
+                id="parameters"
+                placeholder='{"username":"name","password":"pwd"}'
+        ></textarea>
+                    <span class="help-block" id="error-param"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a href="#" class="btn btn-success" id="sendReq">发送请求</a>
+                    <a href="#" class="btn btn-primary">保存请求</a>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+
+
+
+
+    <div class="row bottom">
+        <ul class="nav nav-tabs" id="response-tab">
+            <li role="presentation" class="active"><a href="#">响应数据</a></li>
+            <li role="presentation"><a href="#">响应头</a></li>
+            <li role="presentation"><a href="#">响应状态码</a></li>
+        </ul>
+        <div id="response-contain">
+            <div id="response-text">
+                <pre>响应数据展示</pre>
+            </div>
+            <div id="response-header" style="display: none;">
+                <pre>响应头展示</pre>
+            </div>
+            <div id="response-status" style="display: none;">
+                <pre>响应状态码展示</pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $("#response-tab>li").click(function () {
+            var index=$(this).index();
+            $(this).addClass("active").siblings().removeClass("active");
+            $("#response-contain>div").eq(index).show().siblings().hide();
+        })
+
+        function selectType(id, name) {
+            $("#typeBtn").val(id);
+            $("#typeBtn").text(name);
+            if (name === "POST") {
+                $("#parameter-form").removeClass("hide");
+            } else {
+                $("#parameter-form").addClass("hide");
+            }
+        }
+
+        function isUrl(url) {
+            var reg = /^(http|https)\:\/\/([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*(|localhost|([a-zA-Z0-9\-]+\.?)*[a-zA-Z0-9\-]+\.?([a-zA-Z0-9]{0,9}))(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$/;
+            if (url != null && reg.test(url)) {
+                return true;
+            }
+            return false;
+        }
+
+        function isJson(json) {
+            if ($.trim(json) === "") {
+                return true;
+            }
+
+            if (typeof json == "string") {
+                try {
+                    JSON.parse(json);
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        $("#sendReq").click(function () {
+
+            var headers = $("#headers").val();
+            if (!isJson(headers)) {
+                $("#header-form").addClass("has-error");
+                $("#error-headers").text("请输入JSON格式的请求头参数！！！")
+                return;
+            }
+            {
+                $("#header-form").removeClass("has-error");
+                $("#error-headers").text("")
+            }
+
+            var url = $("#url").val()
+            if (!isUrl(url)) {
+                $("#address-form").addClass("has-error");
+                $("#error-url").text("请输入正确的url地址！！！")
+                return;
+            } else {
+                $("#address-form").remove("has-error");
+                $("#error-url").text("")
+            }
+            var param = $("#parameter-form").val()
+            if (!isJson(param)) {
+                $("#parameter-form").addClass("has-error");
+                $("#error-param").text("请输入JSON格式的请求头参数！！！")
+                return;
+            } else {
+                $("#parameter-form").remove("has-error");
+                $("#error-param").text("")
+            }
+
+
+            $.post("{% url 'api-test' %}",
+                {
+                    "csrfmiddlewaretoken": $('[name="csrfmiddlewaretoken"]').val(),
+                    "typeId": $("#typeBtn").val(),
+                    "reqUrl": url,
+                    "headers": headers,
+                    "parameters": param
+                },
+                function (data) {
+                    if(data=='fail'){
+
+                    }else {
+                        $("#response-text>pre").text(data.body);
+                        $("#response-header>pre").text(JSON.stringify(data.headers,null,4));
+                        $("#response-status>pre").text( data.status);
+                    }
+                }
+            )
+
+        })
+
+    </script>
+
+
+{% endblock %}
+

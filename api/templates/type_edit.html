@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+    新增
+{% endblock %}
+
+{% block main_title %}
+    {% if typeobj %}
+        修改请求类型
+    {% else %}
+        新增请求类型
+    {% endif %}
+
+{% endblock %}
+
+{% block main %}
+    <form action="" method="post" class="form-horizontal {% if error %} has-error{% endif %} " style="margin-top: 50px">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="control-label col-sm-1">类型名</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control"  name="typename" value="{{ typeobj.name }}" required>
+                <span class="help-block">{{ error }}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">保存</button>
+                <a href="{% url 'type-list' %}" class="btn btn-default">返回</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

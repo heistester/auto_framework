@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}
+    请求类型
+{% endblock %}
+
+{% block main_title %}
+    请求类型列表
+{% endblock %}
+
+{% block main %}
+    <div class="table-responsive">
+        {% csrf_token %}
+        <div class="pull-left" style="margin-bottom: 10px">
+            <a href="{% url 'type-list-add' %}" class="btn btn-success" role="button">新增</a>
+            <a href="javascript:location.reload();" class="btn bg-success" role="button">刷新</a>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>类型</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for foo in type_all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ foo.name }}</td>
+                    <td><a href="{% url 'type-list-edit' %}?id={{ foo.pk }}" class="btn btn-primary"
+                           role="button">编辑</a>
+                        <a href="#" class="btn btn-danger delete" tid="{{ foo.pk }}" role="button">
+                            删除</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Button trigger modal -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">是否删除</h4>
+                </div>
+                <div class="modal-body">
+                    <p>确认删除吗？点击确定删除请求类型，取消返回请求列表界面。</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="confirm_delete">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="delete_modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">删除</h4>
+      </div>
+      <div class="modal-body">
+        <p id="delete_msg"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="delete_flash">确定</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+    <script>
+
+        /*$('#delete_flash').click(function () {
+            document.location.reload();
+        })*/
+        $('.delete').on('click', function () {
+            var tid = $(this).attr('tid');
+            var $target=$(this);
+            $('#myModal').modal('show');
+
+            $('#confirm_delete').on('click', function () {
+                $.post(
+                    'delete/',
+                    {
+                        'tid': tid,
+                        "csrfmiddlewaretoken": $('[name="csrfmiddlewaretoken"]').val()
+                    },
+                    function (data) {
+                        $('#myModal').modal('hide');
+                        if (data.status == "success") {
+                            $target.parent().parent().remove();
+                            toastr.success(data.msg);
+                           // $('#delete_modal').modal('show');
+                           // $('#delete_msg').html(data.msg);
+                        } else {
+                            toastr.error(data.msg);
+                           // $('#delete_modal').modal('show');
+                           // $('#delete_msg').html(data.msg);
+                        }
+                    })
+            })
+        })
+    </script>
+{% endblock %}
