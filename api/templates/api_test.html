@@ -89,15 +89,11 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <a href="#" class="btn btn-success" id="sendReq">发送请求</a>
-                    <a href="#" class="btn btn-primary">保存请求</a>
+                    <a href="#" class="btn btn-primary" id="saveReq">保存请求</a>
                 </div>
             </div>
         </form>
-
-
     </div>
-
-
 
 
     <div class="row bottom">
@@ -119,14 +115,29 @@
         </div>
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="saveModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">保存</h4>
+
+                </div>
+                <div class="modal-body" id="save-req-form">
+                    <input type="text" class="form-control" id="save-req">
+                    <span class="help-block" id="save-req-error"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save-req-confirm">确定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
     <script>
-
-        $("#response-tab>li").click(function () {
-            var index=$(this).index();
-            $(this).addClass("active").siblings().removeClass("active");
-            $("#response-contain>div").eq(index).show().siblings().hide();
-        })
-
         function selectType(id, name) {
             $("#typeBtn").val(id);
             $("#typeBtn").text(name);
@@ -136,6 +147,82 @@
                 $("#parameter-form").addClass("hide");
             }
         }
+
+        $("#saveReq").click(function () {
+            var headers = $("#headers").val();
+            var url = $("#url").val();
+            var param = $("#parameter-form").val();
+            if (!isJson(headers)) {
+                $("#header-form").addClass("has-error");
+                $("#error-headers").text("请输入JSON格式的请求头参数！！！");
+                return;
+            } else {
+                $("#header-form").removeClass("has-error");
+                $("#error-headers").text("");
+            }
+            if (!isUrl(url)) {
+                $("#address-form").addClass("has-error");
+                $("#error-url").text("请输入正确的url地址！！！");
+                return;
+            } else {
+                $("#address-form").removeClass("has-error");
+                $("#error-url").text("");
+            }
+            if (!isJson(param)) {
+                $("#parameter-form").addClass("has-error");
+                $("#error-param").text("请输入JSON格式的请求头参数！！！");
+                return;
+            } else {
+                $("#parameter-form").removeClass("has-error");
+                $("#error-param").text("");
+            }
+            $("#saveModal").modal("show");
+        })
+
+        $("#save-req-confirm").click(function () {
+            var name = $("#save-req").val();
+            if (name == '' || name == null) {
+                $('#save-req-form').addClass('has-error');
+                $('#save-req-error').text("请填写名称!!!");
+                return;
+            } else {
+                $('#save-req-form').removeClass('has-error');
+                $('#save-req-error').text("");
+            }
+            var headers = $("#headers").val();
+            var url = $("#url").val();
+            var param = $("#parameter-form").val();
+
+            $.post('{% url 'api-save' %}',
+                {
+                    "csrfmiddlewaretoken": "{{ csrf_token }}",
+                    "typeId": $("#typeBtn").val(),
+                    "reqUrl": url,
+                    "headers": headers,
+                    "parameters": param,
+                    "name": name
+                },
+                function (data) {
+                    if (data.status == "success") {
+                        $("#saveModal").modal("hide");
+                        toastr.success(data.msg);
+                    } else if (data.status == "name_repeated") {
+                        $('#save-req-form').addClass('has-error');
+                        $('#save-req-error').text(data.msg);
+                    } else {
+                        $("#saveModal").modal("hide");
+                        toastr.error(data.msg);
+                    }
+                    $("#save-req").val("");
+                })
+        })
+
+        $("#response-tab>li").click(function () {
+            var index = $(this).index();
+            $(this).addClass("active").siblings().removeClass("active");
+            $("#response-contain>div").eq(index).show().siblings().hide();
+        })
+
 
         function isUrl(url) {
             var reg = /^(http|https)\:\/\/([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*@)*(|localhost|([a-zA-Z0-9\-]+\.?)*[a-zA-Z0-9\-]+\.?([a-zA-Z0-9]{0,9}))(\:[0-9]+)*(\/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$/;
@@ -161,36 +248,35 @@
             return false;
         }
 
+
         $("#sendReq").click(function () {
 
             var headers = $("#headers").val();
+            var url = $("#url").val();
+            var param = $("#parameter-form").val();
             if (!isJson(headers)) {
                 $("#header-form").addClass("has-error");
-                $("#error-headers").text("请输入JSON格式的请求头参数！！！")
+                $("#error-headers").text("请输入JSON格式的请求头参数！！！");
                 return;
-            }
-            {
+            } else {
                 $("#header-form").removeClass("has-error");
-                $("#error-headers").text("")
+                $("#error-headers").text("");
             }
-
-            var url = $("#url").val()
             if (!isUrl(url)) {
                 $("#address-form").addClass("has-error");
-                $("#error-url").text("请输入正确的url地址！！！")
+                $("#error-url").text("请输入正确的url地址！！！");
                 return;
             } else {
-                $("#address-form").remove("has-error");
-                $("#error-url").text("")
+                $("#address-form").removeClass("has-error");
+                $("#error-url").text("");
             }
-            var param = $("#parameter-form").val()
             if (!isJson(param)) {
                 $("#parameter-form").addClass("has-error");
-                $("#error-param").text("请输入JSON格式的请求头参数！！！")
+                $("#error-param").text("请输入JSON格式的请求头参数！！！");
                 return;
             } else {
-                $("#parameter-form").remove("has-error");
-                $("#error-param").text("")
+                $("#parameter-form").removeClass("has-error");
+                $("#error-param").text("");
             }
 
 
@@ -203,12 +289,12 @@
                     "parameters": param
                 },
                 function (data) {
-                    if(data=='fail'){
+                    if (data == 'fail') {
 
-                    }else {
+                    } else {
                         $("#response-text>pre").text(data.body);
-                        $("#response-header>pre").text(JSON.stringify(data.headers,null,4));
-                        $("#response-status>pre").text( data.status);
+                        $("#response-header>pre").text(JSON.stringify(data.headers, null, 4));
+                        $("#response-status>pre").text(data.status);
                     }
                 }
             )

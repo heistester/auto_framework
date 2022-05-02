@@ -1,36 +1,42 @@
 {% extends "base.html" %}
 
 {% block title %}
-    请求类型
+    已存测试
 {% endblock %}
 
 {% block main_title %}
-    请求类型列表
+    已存测试列表
 {% endblock %}
 
 {% block main %}
+
     <div class="table-responsive">
         {% csrf_token %}
-        <div class="pull-left" style="margin-bottom: 10px">
-            <a href="{% url 'type-list-add' %}" class="btn btn-success" role="button">新增</a>
+        <div class="pull-right" style="margin-bottom: 10px">
             <a href="javascript:location.reload();" class="btn bg-success" role="button">刷新</a>
         </div>
         <table class="table table-striped">
             <thead>
-            <tr>
+            <tr class="bg-warning">
                 <th>id</th>
-                <th>类型</th>
+                <th>名称</th>
+                <th>地址</th>
+                <th>请求头</th>
+                <th>请求参数</th>
                 <th>操作</th>
             </tr>
             </thead>
             <tbody>
-            {% for foo in type_all %}
+            {% for foo in api_tests %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ foo.name }}</td>
-                    <td><a href="{% url 'type-list-edit' %}?id={{ foo.pk }}" class="btn btn-primary"
+                 <td>{{ foo.url }}</td>
+                 <td>{{ foo.headers }}</td>
+                 <td>{{ foo.parameters }}</td>
+                    <td><a href="{% url 'api-test-edit' %}?id={{ foo.pk }}" class="btn btn-primary"
                            role="button">编辑</a>
-                        <a href="#" class="btn btn-danger delete" tid="{{ foo.pk }}" role="button">
+                        <a href="#" class="btn btn-danger delete" aid="{{ foo.pk }}" role="button">
                             删除</a></td>
                 </tr>
             {% endfor %}
@@ -77,19 +83,16 @@
 
     <script>
 
-        /*$('#delete_flash').click(function () {
-            document.location.reload();
-        })*/
         $('.delete').on('click', function () {
-            var tid = $(this).attr('tid');
+            var aid = $(this).attr('aid');
             var $target = $(this);
             $('#myModal').modal('show');
 
             $('#confirm_delete').on('click', function () {
                 $.post(
-                    'delete/',
+                    '/delete_api/',
                     {
-                        'tid': tid,
+                        'aid': aid,
                         "csrfmiddlewaretoken": $('[name="csrfmiddlewaretoken"]').val()
                     },
                     function (data) {
@@ -97,15 +100,12 @@
                         if (data.status == "success") {
                             $target.parent().parent().remove();
                             toastr.success(data.msg);
-                            // $('#delete_modal').modal('show');
-                            // $('#delete_msg').html(data.msg);
                         } else {
                             toastr.error(data.msg);
-                            // $('#delete_modal').modal('show');
-                            // $('#delete_msg').html(data.msg);
                         }
                     })
             })
         })
     </script>
+
 {% endblock %}
