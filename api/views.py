@@ -141,5 +141,3 @@ def api_test_edit(request):
     return render(request,"api_test_edit.html",locals())
 
 
-def index(request):
-    return redirect(reverse('api-test'))
