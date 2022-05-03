@@ -24,7 +24,11 @@
                 <div class="col-sm-8">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-default" value="{{ type_all.first.pk }}" id="typeBtn">
-                            {{ type_all.first.name }}
+                            {% if type_all.first %}
+                                {{ type_all.first.name }}
+                            {% else %}
+                                GET
+                            {% endif %}
                         </button>
                         <button
                                 type="button"

@@ -139,3 +139,7 @@ def api_test_edit(request):
             req["msg"]="更新成功"
         return JsonResponse(req)
     return render(request,"api_test_edit.html",locals())
+
+
+def index(request):
+    return redirect(reverse('api-test'))
