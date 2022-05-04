@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        #fileinput {
+            display: none;
+        }
+
+        .avatar_img {
+            height: 60px;
+            width: 60px;
+        }
+
+        #error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+<h3 class="page-header text-center">注册页面</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-lg-offset-3">
+            <form id="form">
+                {% csrf_token %}
+
+                {% for form in forms %}
+                    <div class="form-group">
+                        <label for="{{ form.auto_id }}">{{ form.label }}</label>
+                        {{ form }} <span id="error" class="pull-right"></span>
+                    </div>
+                {% endfor %}
+                <div class="form-group">
+                    <label for="fileinput">
+                        头像 <br>
+                        <img src="/media/avatars/default.png" class="avatar_img" alt=""></label>
+                    <input type="file" id="fileinput">
+                </div>
+
+                <br>
+                <button data-loading-text="Loading..." class="btn-group btn btn-success reg_btn pull-right btn-block"
+                        type="button">注册
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/crypto-js/crypto-js.js' %}"></script>
+<script type="application/javascript">
+
+    function encryPasswd(passwd, keyStr) {
+        var KEY = CryptoJS.enc.Utf8.parse('2021202220212018');
+        var IV = CryptoJS.enc.Utf8.parse('2022201920202018');
+        var key = KEY;
+        var iv = IV;
+        var pwdEncode = CryptoJS.enc.Utf8.parse(passwd);
+        var encryptedPassword = CryptoJS.AES.encrypt(pwdEncode, key, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.ZeroPadding
+        });
+        return encryptedPassword.toString();
+    }
+
+    $("#fileinput").on("change", function (event) {
+        var file_obj = event.target.files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file_obj);
+        reader.onload = function () {
+            $(".avatar_img").attr("src", reader.result);
+        }
+    })
+
+    $(".reg_btn").on("click", function () {
+        var request_data = $("#form").serializeArray();
+        var form = new FormData();
+        $.each(request_data, function (index, data) {
+            if (data.name=='password'||data.name=='re_password'){
+                data.value=encryPasswd(data.value);
+            }
+            form.append(data.name, data.value);
+        })
+        var file = $("#fileinput")[0].files[0]
+
+        form.append("avatar", file)
+        console.log(form)
+        $.ajax(
+            {
+                url: "",
+                data: form,
+                type: "post",
+                contentType: false,
+                processData: false,
+                success: function (data, code) {
+                    if (data.user == null) {
+                        $("span#error").html("");
+                        $(".form-group").removeClass("has-error");
+
+                        $.each(data.msg, function (name, error) {
+                            if (name == "__all__") {
+                                $("#id_re_password+span").html(error[0]);
+                            }
+
+                            $("#id_" + name).next().html(error[0]);
+                            $("#id_" + name).parent().addClass("has-error");
+                        })
+                    } else {
+                        location.href = "{% url 'login' %}"
+                    }
+                }
+            }
+        )
+    })
+</script>
+
+</body>
+</html>

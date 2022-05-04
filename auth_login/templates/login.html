@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    {% load static %}
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+
+</head>
+<body>
+<h3 class="page-header text-center">登录页面</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-lg-offset-3">
+            <form>
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="valid">验证码</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="valid_code form-control" id="valid">
+                        </div>
+                        <div class="col-md-6">
+                            <img id="validCodeImg" class="img-rounded" width="270" height="35"
+                                 src="{% url 'validcode_img' %}"
+                                 alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <span id="errorSpan" class="text-danger"></span>
+                <br>
+                <button data-loading-text="Loading..." class="btn-group btn btn-danger login_btn pull-right btn-block"
+                        type="button">登录
+                </button>
+
+                <a class="list-group" href="{% url 'register' %}">没有系统账户？立即注册</a>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/crypto-js/crypto-js.js' %}"></script>
+<script>
+    function encryPasswd(passwd, keyStr) {
+        var KEY = CryptoJS.enc.Utf8.parse('2021202220212018');
+        var IV = CryptoJS.enc.Utf8.parse('2022201920202018');
+        var key = KEY;
+        var iv = IV;
+        var pwdEncode = CryptoJS.enc.Utf8.parse(passwd);
+        var encryptedPassword = CryptoJS.AES.encrypt(pwdEncode, key, {
+            iv: iv,
+            mode: CryptoJS.mode.CBC,
+            padding: CryptoJS.pad.ZeroPadding
+        });
+        return encryptedPassword.toString();
+    }
+    //刷新验证码
+    $("#validCodeImg").click(function () {
+        $(this)[0].src += "?";
+    });
+
+    $(".login_btn").on('click', function () {
+        var $btn = $(this).button('loading')
+
+        $.post("", {
+                username: $("#username").val(),
+                password: encryPasswd($("#password").val()),
+                validCode: $(".valid_code").val(),
+                csrfmiddlewaretoken: $('[name="csrfmiddlewaretoken"]').val()
+            },
+            function (data, status) {
+                if (data.msg != "success") {
+                    $("#errorSpan").html(data.msg);
+                    setTimeout(function () {
+                        $("#errorSpan").html("");
+                    }, 2000)
+                } else if (data.msg == "success") {
+                    location.href = "{% url 'api-test' %}"
+                } else {
+                    $("#errorSpan").html("系统异常");
+                    setTimeout(function () {
+                        $("#errorSpan").html("");
+                    }, 2000)
+                }
+            });
+        $btn.button('reset')
+    });
+</script>
+</body>
+</html>

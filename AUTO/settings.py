@@ -15,8 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -24,10 +22,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'k&6*&@bwpc_iskv3vbbe-s%r_4+@6u=q+#g6d&!vm5*k))(o$&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-
 
 # Application definition
 
@@ -53,7 +50,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'AUTO.urls'
-AUTH_USER_MODEL='auth_login.UserInfo'
+AUTH_USER_MODEL = 'auth_login.UserInfo'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -65,29 +62,29 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
+            'builtins': ['django.templatetags.static'],
         },
     },
 ]
 
 WSGI_APPLICATION = 'AUTO.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # 数据库引擎
-        'NAME': 'api', # 数据库名
-        'USER': 'root', # 账号
-        'PASSWORD': 'Gauss_234', # 密码
-        'HOST': '192.168.1.13', # HOST
-        'POST': 3306, # 端口
+        'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
+        'NAME': 'api',  # 数据库名
+        'USER': 'root',  # 账号
+        'PASSWORD': 'Gauss_234',  # 密码
+        'HOST': '192.168.1.13',  # HOST
+        'POST': 3306,  # 端口
 
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -107,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -121,12 +117,11 @@ USE_L10N = True
 
 USE_TZ = False
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
-STATICFILES_DIRS = [
-	os.path.join(BASE_DIR,"static")
-]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
