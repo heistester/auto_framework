@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import auth
 from django.http import JsonResponse,HttpResponse
@@ -9,7 +10,7 @@ from utils.vaild_img import get_vaild_code
 from utils.encry_data import descrypt_passwd
 
 def index(request):
-    return render(request,"index.html")
+    return render(request, "auth_login/index.html")
 
 def login(request):
     if request.method == "POST":
@@ -32,8 +33,7 @@ def login(request):
         else:
             res["msg"] = "验证码错误"
             return JsonResponse(res)
-    return render(request, "login.html")
-
+    return render(request, "auth_login/login.html")
 
 def get_validcode_img(request):
     '''
@@ -44,8 +44,6 @@ def get_validcode_img(request):
     data, valid_code = get_vaild_code()
     request.session["validcode"] = valid_code
     return HttpResponse(data)
-
-
 
 def register(request):
     if request.is_ajax():
@@ -63,14 +61,13 @@ def register(request):
         else:
             response["msg"]=res_form.errors
         return JsonResponse(response)
-
-
-
     forms=myforms.RegisterForm()
-    return render(request,"register.html",{"forms":forms})
+    return render(request, "auth_login/register.html", {"forms":forms})
 
-
-
+@login_required
+def logout(request):
+    auth.logout(request)
+    return render(request,'auth_login/index.html')
 
 
 
@@ -88,6 +85,5 @@ def register(request):
 
 
 def page_not_found(request,expection):
-    return render(request,'404.html')
+    return render(request, 'auth_login/404.html')
 handler404='auth_login.views.page_not_found'
-

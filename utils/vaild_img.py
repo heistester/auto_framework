@@ -8,7 +8,7 @@ def get_vaild_code():
         return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 
     img = Image.new("RGB", (270, 40), color='grey')
-    font = ImageFont.truetype("static/font/kumo.ttf", size=40)
+    font = ImageFont.truetype("static/fonts/kumo.ttf", size=40)
     draw = ImageDraw.Draw(img)
     width = 270
     height = 35

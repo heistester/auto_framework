@@ -8,6 +8,14 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <style>
+        #user_img {
+            margin-right: 10px;
+            vertical-align: -3px;
+            font-size: 20px;
+
+        }
+    </style>
 
     <title>{% block title %}
         base
@@ -44,14 +52,16 @@
 
 <body>
 
-{% include 'topbar.html' %}
+{% include 'api/topbar.html' %}
 
 <div class="container-fluid">
     <div class="row">
-        {% include 'leftbar.html' %}
+        {% include 'api/leftbar.html' %}
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h2 class="sub-header">{% block main_title %}
-            {% endblock %}</h2>
+            <h2 class="sub-header">
+                {% block main_title %}
+                {% endblock %}
+            </h2>
             {% block main %}
             {% endblock %}
         </div>

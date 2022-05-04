@@ -4,18 +4,19 @@ import json
 import requests
 from django.http import JsonResponse
 from django.shortcuts import render,redirect
-
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
 from api import models
 
 
 # Create your views here.
+@login_required
 def type_list(request):
     type_all=models.Type.objects.all().order_by('pk')
-    return render(request,"type_list.html",{"type_all":type_all})
+    return render(request, "api/type_list.html", {"type_all":type_all})
 
-
+@login_required
 def type_list_add(request):
     error = ""
     if request.method=="POST":
@@ -28,9 +29,9 @@ def type_list_add(request):
         else:
             models.Type.objects.create(name=type_name)
             return redirect(reverse('type-list'))
-    return render(request,"type_edit.html",{"error":error})
+    return render(request, "api/type_edit.html", {"error":error})
 
-
+@login_required
 def type_list_edit(request):
     error = ""
     tid = request.GET.get("id")
@@ -45,9 +46,9 @@ def type_list_edit(request):
         else:
             models.Type.objects.filter(pk=tid).update(name=type_name)
             return redirect(reverse('type-list'))
-    return render(request, "type_edit.html", {"error": error, "typeobj": type_obj})
+    return render(request, "api/type_edit.html", {"error": error, "typeobj": type_obj})
 
-
+@login_required
 def type_list_delete(request):
     if request.method=="POST":
         res={"status":"fail","msg":None}
@@ -60,6 +61,7 @@ def type_list_delete(request):
             res["msg"]="删除失败"
         return JsonResponse(res)
 
+@login_required
 def delete_api(request):
     if request.method == "POST":
         res = {"status": "fail", "msg": None}
@@ -72,6 +74,7 @@ def delete_api(request):
             res["msg"] = "删除失败"
         return JsonResponse(res)
 
+@login_required
 def send_request(name,url,headers,params):
     if name=="GET":
         res=requests.get(url=url,headers=headers,params=params)
@@ -81,6 +84,7 @@ def send_request(name,url,headers,params):
         return 'fail'
     return res.text,res.headers,res.status_code
 
+@login_required
 def api_test(request):
     type_all = models.Type.objects.all().order_by('pk')
     if request.method=="POST":
@@ -98,9 +102,9 @@ def api_test(request):
         resp["headers"]=dict(res_headers)
         resp["status"]=res_status
         return JsonResponse(dict(resp))
-    return render(request, "api_test.html", {"type_all": type_all})
+    return render(request, "api/api_test.html", {"type_all": type_all})
 
-
+@login_required
 def api_save(request):
     api_tests = models.ApiTest.objects.all().order_by("pk")
     if request.method=="POST":
@@ -119,9 +123,9 @@ def api_save(request):
             req["status"] = "success"
             req["msg"] = "添加成功"
         return JsonResponse(req)
-    return render(request,'api_save.html',locals())
+    return render(request, 'api/api_save.html', locals())
 
-
+@login_required
 def api_test_edit(request):
     pk=request.GET.get("id")
     api_test=models.ApiTest.objects.filter(pk=pk).first()
@@ -133,11 +137,9 @@ def api_test_edit(request):
         headers = request.POST.get("headers")
         params = request.POST.get("parameters")
         name = request.POST.get("name")
-
         if models.ApiTest.objects.filter(pk=pk).update(url=req_url,headers=headers,parameters=params,name=name,type_id=type_id):
             req["status"]="success"
             req["msg"]="更新成功"
         return JsonResponse(req)
-    return render(request,"api_test_edit.html",locals())
-
+    return render(request, "api/api_test_edit.html", locals())
 
