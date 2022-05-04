@@ -14,7 +14,7 @@ from api import models
 @login_required
 def type_list(request):
     type_all=models.Type.objects.all().order_by('pk')
-    return render(request, "api/type_list.html", {"type_all":type_all})
+    return render(request, "api/type_list.html", {"type_all":type_all,"img":img})
 
 @login_required
 def type_list_add(request):

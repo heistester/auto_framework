@@ -87,9 +87,7 @@
             form.append(data.name, data.value);
         })
         var file = $("#fileinput")[0].files[0]
-
         form.append("avatar", file)
-        console.log(form)
         $.ajax(
             {
                 url: "",

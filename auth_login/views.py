@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import auth
@@ -54,6 +56,7 @@ def register(request):
             password=res_form.cleaned_data.get("password")
             email = res_form.cleaned_data.get("email")
             avatar=request.FILES.get("avatar")
+            avatar.name="img"+uuid.uuid4().hex+".jpg"
             kwargs={}
             if avatar:
                 kwargs["avatar"]=avatar

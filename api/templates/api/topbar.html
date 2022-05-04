@@ -13,7 +13,7 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
                 {% if request.user.is_authenticated %}
-                    <li>
+                    <li id="user_info">
                         <a href="#" >
                             <span id="user_img" class="glyphicon glyphicon-user"></span>
                             {{ request.user.username }}
@@ -38,3 +38,29 @@
         </div>
     </div>
 </nav>
+
+<div class="modal fade" id="personModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">个人信息</h4>
+      </div>
+      <div class="modal-body">
+
+          <img src="{{ MEDIA_URL }}{{ request.user.avatar }}" class="img-circle img-responsive" style="margin-left: 30px" width="80px" height="80px">
+          <label class="pull-right" style="width: 40px;margin-top: -60px;margin-right: 200px">{{ request.user.username }}</label>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    $("#user_info").click(function (){
+        $("#personModal").modal("show");
+    })
+</script>
