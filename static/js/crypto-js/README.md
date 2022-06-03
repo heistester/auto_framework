@@ -10,7 +10,7 @@ Requirements:
 - npm (Node.js package manager)
 
 ```bash
-npm install crypto-js
+npm install crypto-css
 ```
 
 ### Usage
@@ -18,9 +18,9 @@ npm install crypto-js
 ES6 import for typical API call signing use case:
 
 ```javascript
-import sha256 from 'crypto-js/sha256';
-import hmacSHA512 from 'crypto-js/hmac-sha512';
-import Base64 from 'crypto-js/enc-base64';
+import sha256 from 'crypto-css/sha256';
+import hmacSHA512 from 'crypto-css/hmac-sha512';
+import Base64 from 'crypto-css/enc-base64';
 
 const message, nonce, path, privateKey; // ...
 const hashDigest = sha256(nonce + message);
@@ -30,8 +30,8 @@ const hmacDigest = Base64.stringify(hmacSHA512(path + hashDigest, privateKey));
 Modular include:
 
 ```javascript
-var AES = require("crypto-js/aes");
-var SHA256 = require("crypto-js/sha256");
+var AES = require("crypto-css/aes");
+var SHA256 = require("crypto-css/sha256");
 ...
 console.log(SHA256("Message"));
 ```
@@ -51,7 +51,7 @@ Requirements:
 - Bower (package manager for frontend)
 
 ```bash
-bower install crypto-js
+bower install crypto-css
 ```
 
 ### Usage
@@ -62,14 +62,14 @@ Modular include:
 require.config({
     packages: [
         {
-            name: 'crypto-js',
-            location: 'path-to/bower_components/crypto-js',
+            name: 'crypto-css',
+            location: 'path-to/bower_components/crypto-css',
             main: 'index'
         }
     ]
 });
 
-require(["crypto-js/aes", "crypto-js/sha256"], function (AES, SHA256) {
+require(["crypto-css/aes", "crypto-css/sha256"], function (AES, SHA256) {
     console.log(SHA256("Message"));
 });
 ```
@@ -80,7 +80,7 @@ Including all libraries, for access to extra methods:
 // Above-mentioned will work or use this simple form
 require.config({
     paths: {
-        'crypto-js': 'path-to/bower_components/crypto-js/crypto-js'
+        'crypto-js': 'path-to/bower_components/crypto-css/crypto-css'
     }
 });
 

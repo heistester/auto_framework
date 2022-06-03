@@ -1,5 +1,6 @@
 import random
 
+from django.core.cache import cache
 from PIL import Image,ImageDraw,ImageFont
 from io import BytesIO
 
@@ -24,5 +25,25 @@ def get_vaild_code():
     img.save(f, 'png')
     data = f.getvalue()
     return data, valid_code
+
+
+def get_png(width:int,height:int,img_format="PNG"):
+    key="{}.{}.{}".format(width,height,img_format)
+    content = cache.get(key)   #服务器缓存机制
+    if not content:
+        img = Image.new("RGB", (width, height))
+        draw = ImageDraw.Draw(img)
+        content=BytesIO()
+        text = "{}X{}".format(width, height)
+        dwidth,dheight=draw.textsize(text)
+        if dwidth<width and dheight<height:
+            left=(width-dwidth)//2
+            top=(height-dheight)//2
+            draw.text((left,top),text,fill=(255,255,255))
+        img.save(content,img_format)
+        content.seek(0)
+    cache.set(key,content,60*60)
+    return content
+
 
 

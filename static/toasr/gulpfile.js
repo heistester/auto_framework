@@ -5,7 +5,7 @@ var merge = require('merge-stream');
 var plug = require('gulp-load-plugins')();
 
 var paths = {
-    js: './toastr.js',
+    js: './toastr.css',
     less: './toastr.less',
     report: './report',
     build: './build'
@@ -46,7 +46,7 @@ gulp.task('js', function () {
         .pipe(plug.bytediff.stop(bytediffFormatter))
         .pipe(plug.sourcemaps.write('.'))
         .pipe(plug.rename(function (path) {
-            if (path.extname === '.js') {
+            if (path.extname === '.css') {
                 path.basename += '.min';
             }
         }))
@@ -71,7 +71,7 @@ gulp.task('css', function () {
 });
 
 /**
- * Build js and css
+ * Build css and css
  */
 gulp.task('default', ['js', 'css'], function () {
     log('Analyze, Build CSS and JS');
@@ -138,7 +138,7 @@ function analyzejscs(sources) {
  */
 function startTests(singleRun, done) {
     karma.start({
-        configFile: __dirname + '/karma.conf.js',
+        configFile: __dirname + '/karma.conf.css',
         singleRun: !!singleRun
     }, karmaCompleted);
 

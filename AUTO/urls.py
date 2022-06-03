@@ -18,6 +18,8 @@ from django.urls import path, include,re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('^api', include('api.urls')),
+    re_path('^api/', include('api.urls')),
+    re_path('^img/', include('placehoder.urls')),
+    re_path('^webui/', include(('webui.urls','webui'),namespace='webui')),
     re_path('', include('auth_login.urls'))
 ]

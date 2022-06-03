@@ -14,12 +14,12 @@ module.exports = function (config) {
 
         // list of files / patterns to load in the browser
         files: [
-            'node_modules/jquery/dist/jquery.min.js',
+            'node_modules/jquery/dist/jquery.min.css',
             'build/toastr.css',
             'toastr.js',
-            'node_modules/qunitjs/qunit/qunit.js',
-            'tests/unit/qunit-helper.js',
-            'tests/unit/toastr-tests.js'
+            'node_modules/qunitjs/qunit/qunit.css',
+            'tests/unit/qunit-helper.css',
+            'tests/unit/toastr-tests.css'
         ],
 
 

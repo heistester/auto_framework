@@ -8,11 +8,11 @@
 
 </head>
 <body>
-<h3 class="page-header text-center">登录页面</h3>
+<h3 class="page-header text-center">登录</h3>
 <div class="container">
     <div class="row">
         <div class="col-md-6 col-lg-offset-3">
-            <form>
+            <form  role="form">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="username">用户名</label>
@@ -87,7 +87,7 @@
                         $("#errorSpan").html("");
                     }, 2000)
                 } else if (data.msg == "success") {
-                    location.href = "{% url 'api-test' %}"
+                    location.href = "{% url 'home' %}"
                 } else {
                     $("#errorSpan").html("系统异常");
                     setTimeout(function () {

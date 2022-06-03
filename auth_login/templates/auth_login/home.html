@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <title>欢迎来到首页</title>
+    {% load static %}
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/justified-nav.css' %}" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- The justified navigation menu is meant for single line per list item.
+           Multiple lines will require custom code not provided by Bootstrap. -->
+      <div class="masthead">
+        <h3 class="text-muted">>>></h3>
+        <nav>
+          <ul class="nav nav-justified">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Projects</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Downloads</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Jumbotron -->
+      <div class="jumbotron">
+        <h1>欢迎来到我的页面，{{ request.user.username }}!</h1>
+        <p class="lead">本页面通向api测试界面，webui测试界面，获取图片界面......</p>
+{#        <p><a class="btn btn-lg btn-success" href="#" role="button">点击什么也不会发生</a></p>#}
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-lg-4">
+          <h2>api测试</h2>
+          <p class="text-danger">api-test</p>
+          <p>可以发发请求，报错请求内容什么的...</p>
+          <p><a class="btn btn-primary" href="{% url 'api-test' %}" role="button">点击进入 &raquo;</a></p>
+        </div>
+        <div class="col-lg-4">
+          <h2>webui测试</h2>
+          <p>ui-test</p>
+          <p>就只能看个测试报告哈...</p>
+          <p><a class="btn btn-primary" href="{% url 'webui:report' %}" role="button">点击进入 &raquo;</a></p>
+       </div>
+        <div class="col-lg-4">
+          <h2>其他</h2>
+          <p>others</p>
+          <p>敬请期待...</p>
+          <p><a class="btn btn-primary" href="#" role="button">点击进入 &raquo;</a></p>
+        </div>
+      </div>
+
+      <!-- Site footer -->
+      <footer class="footer">
+        <p> @hetester</p>
+      </footer>
+
+    </div>
+
+  </body>
+</html>

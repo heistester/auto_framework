@@ -72,6 +72,10 @@ def logout(request):
     auth.logout(request)
     return render(request,'auth_login/index.html')
 
+@login_required
+def home(request):
+
+    return render(request,'auth_login/home.html')
 
 
 
@@ -90,3 +94,4 @@ def logout(request):
 def page_not_found(request,expection):
     return render(request, 'auth_login/404.html')
 handler404='auth_login.views.page_not_found'
+

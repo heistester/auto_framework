@@ -1,5 +1,5 @@
-/// <reference path="../../../toastr.js" />
-/// <reference path="../qunit/qunit.js" />
+/// <reference path="../../../toastr.css" />
+/// <reference path="../qunit/qunit.css" />
 (function () {
     var iconClasses = {
         error: 'toast-error',

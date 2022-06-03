@@ -36,7 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
-    'auth_login.apps.AuthLoginConfig'
+    'auth_login.apps.AuthLoginConfig',
+    'webui.apps.WebuiConfig',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'placehoder.img_middleware.ImgMiddleWare'
 ]
 
 ROOT_URLCONF = 'AUTO.urls'
@@ -80,7 +83,7 @@ DATABASES = {
         'NAME': 'api',  # 数据库名
         'USER': 'root',  # 账号
         'PASSWORD': 'Gauss_234',  # 密码
-        'HOST': '192.168.1.13',  # HOST
+        'HOST': '192.168.1.128',  # HOST
         'POST': 3306,  # 端口
 
     }
